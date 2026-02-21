@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "madrid-housing-scanner"
+version = "1.0.0"
+description = "Real-time real estate analytics platform for Madrid"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["real-estate", "data-engineering", "pyspark", "fastapi", "streamlit", "madrid"]
+authors = [{ name = "MadridHousingScanner Team" }]
+
+dependencies = [
+  "pandas>=2.0.0",
+  "pyarrow>=14.0.0",
+  "numpy>=1.26.0",
+  "playwright>=1.41.0",
+  "playwright-stealth>=1.0.6",
+  "pyspark>=3.5.0",
+  "duckdb>=0.10.0",
+  "fastapi>=0.110.0",
+  "uvicorn[standard]>=0.27.0",
+  "streamlit>=1.32.0",
+  "folium>=0.16.0",
+  "streamlit-folium>=0.18.0",
+  "requests>=2.31.0",
+  "pydantic>=2.6.0",
+  "pydantic-settings>=2.2.0",
+  "python-dotenv>=1.0.0",
+  "structlog>=24.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-asyncio>=0.23.0",
+  "pytest-cov>=4.1.0",
+  "httpx>=0.27.0",
+]
+
+[project.scripts]
+# Entry point scripts
+madrid-api   = "app.api.main:app"
+madrid-scrape = "pipeline.extractors.factory:ExtractorFactory"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "pipeline*", "app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
