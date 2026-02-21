@@ -36,7 +36,7 @@ st.set_page_config(
 )
 
 # ── Constants ─────────────────────────────────────────────────────────────────
-API_BASE = "http://localhost:8000"
+API_BASE = st.secrets.get("API_URL", "http://localhost:8000")
 MADRID_CENTER = [40.4168, -3.7038]
 
 # District centres for fly-to (same as geodata module)
