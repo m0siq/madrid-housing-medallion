@@ -38,13 +38,25 @@ def generate_data():
     df = pd.DataFrame(data)
     
     # 2. Guardar en DuckDB (Capa Gold)
+    df = pd.DataFrame(data)
+    
+    # Aseguramos que los strings sean strings puros de Python
+    df['district'] = df['district'].astype(str)
+
+    # 2. Guardar en DuckDB (Capa Gold)
     if os.path.exists(DB_PATH):
         os.remove(DB_PATH)
         
     con = duckdb.connect(DB_PATH)
-    con.execute("CREATE TABLE gold_listings AS SELECT * FROM df")
+    
+    # Creamos la tabla directamente desde el diccionario para evitar el lío de tipos de Pandas
+    con.execute("CREATE TABLE gold_listings (district VARCHAR, area_sqm INTEGER, price INTEGER, opportunity_index DOUBLE, latitude DOUBLE, longitude DOUBLE)")
+    
+    # Insertamos los datos de forma masiva
+    con.executemany("INSERT INTO gold_listings VALUES (?, ?, ?, ?, ?, ?)", df.values.tolist())
+    
     con.close()
-    print(f"✅ Archivo {DB_PATH} creado con {n} registros.")
+    print(f"✅ housing.db generado con éxito con {n} registros.")
 
 if __name__ == "__main__":
     generate_data()
