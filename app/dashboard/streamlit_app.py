@@ -19,6 +19,7 @@ Run::
 
 from __future__ import annotations
 
+import os
 from typing import Any, Dict, List, Optional
 
 import folium
@@ -35,11 +36,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Constants ─────────────────────────────────────────────────────────────────
-try:
-    API_BASE = st.secrets.get("API_URL", "http://localhost:8000")
-except Exception:
-    API_BASE = "http://localhost:8000"
+# ── API base URL resolution ───────────────────────────────────────────────────
+# Priority: env var (Railway / Docker / CI) → st.secrets (Streamlit Cloud) → localhost
+_API_URL_DEFAULT = "http://localhost:8000"
+if os.environ.get("API_URL"):
+    API_BASE = os.environ["API_URL"]
+else:
+    try:
+        API_BASE = st.secrets.get("API_URL", _API_URL_DEFAULT)
+    except Exception:
+        API_BASE = _API_URL_DEFAULT
 MADRID_CENTER = [40.4168, -3.7038]
 
 # District centres for fly-to (same as geodata module)
